@@ -15,12 +15,11 @@ class WebScraping:
         soup = BeautifulSoup(self._url.content, 'lxml')
 
         newelement = soup.findAll('div', class_="p13n-sc-uncoverable-faceout")
-        print(len(newelement))
         for el in newelement:
-            print(el)
             selected_name = el.find_next('div', class_="_cDEzb_p13n-sc-css-line-clamp-3_g3dy1")
+            selected_image=el.find_next('img')['src']
             selected_star = el.find('span', {"class": 'a-icon-alt'})
-            print(selected_star)
+
             if selected_star is None:
                 selected_star="No Rating"
             else:
@@ -33,7 +32,8 @@ class WebScraping:
                 selected_price_offer_element=selected_price_offer_element[1]
             price = str(selected_price_offer_element.text)
             self._product.addToProductList(self=self._product,
-                itemnumber=count,
+                                     itemnumber=count,
+                                    image=selected_image,
                                      name=selected_name.text
                                      , rate=selected_star
                                      , price=price,

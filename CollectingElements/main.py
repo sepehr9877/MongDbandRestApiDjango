@@ -22,13 +22,12 @@ def RequestToPage(url,categoryname):
 def AddToDB(url,category):
     Webone = WebScraping(category=category)
     Webone.seturl(url=url)
-
 if __name__=='__main__':
-    # RequestToPage(url=urlhome,categoryname="home")
-    # RequestToPage(url=urlCraft,categoryname='Craft')
-    # RequestToPage(url=urlArtwork,categoryname='ArtWork')
-    # RequestToPage(url=urlBath,categoryname='Bath')
-    # RequestToPage(url=urlBedding,categoryname='Bedding')
+    RequestToPage(url=urlhome,categoryname="home")
+    RequestToPage(url=urlCraft,categoryname='Craft')
+    RequestToPage(url=urlArtwork,categoryname='ArtWork')
+    RequestToPage(url=urlBath,categoryname='Bath')
+    RequestToPage(url=urlBedding,categoryname='Bedding')
     RequestToPage(url=urlFreshFlower,categoryname='FreshFlower')
     RequestToPage(url=urlFurniture,categoryname='Furniture')
     RequestToPage(url=urlHeating,categoryname='urlHeating')

@@ -22,22 +22,19 @@ class Products:
         print("Set Collection Name")
         self._ProductCollection=self._ProductDb[f'{CollectionName}']
     def insertToMongoDb(self,category):
-        for item in self._ProductList:
-            print(item)
         self.setCollectionName(self=self,CollectionName=category)
         self._ProductCollection.insert_many(self._ProductList)
         self._ProductList=[]
         self._ProductCollection=None
-    def addToProductList(self,itemnumber,name,price,rate,review,category):
-        print("AddTolist")
+    def addToProductList(self,image,itemnumber,name,price,rate,review,category):
         self._productItem['itemnumber']=itemnumber
         self._productItem['name']=name
         self._productItem['price']=price
         self._productItem['review']=review
         self._productItem['rate']=rate
         self._productItem['category']=category
+        self._productItem['imageUrl']=image
         self._ProductList.append(self._productItem)
-        print(self._productItem)
         self._productItem={}
     def getAllProducts(self):
         return self._ProductList
