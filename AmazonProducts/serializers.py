@@ -3,7 +3,7 @@ from AmazonProducts.models import Products,Category
 class ProdcutsSerializer(serializers.ModelSerializer):
     class Meta:
         model=Products
-        fields=['Title','Image','Price','Reviews','Rate','Categories']
+        fields=['id','Title','Image','Price','Reviews','Rate','Categories']
 class CategorySerialzier(serializers.ModelSerializer):
     class Meta:
         model=Category
