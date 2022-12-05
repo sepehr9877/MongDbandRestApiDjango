@@ -1,9 +1,8 @@
-from django.shortcuts import render
 from rest_framework.generics import ListAPIView
 from rest_framework.mixins import ListModelMixin,RetrieveModelMixin
 # Create your views here.
-from .serializers import ProdcutsSerializer,CategorySerialzier
-from .models import Products,Category
+from AmazonProducts.API.serializers import ProdcutsSerializer,CategorySerialzier
+from AmazonProducts.models import Products,Category
 class ProductsView(ListAPIView,
                    ListModelMixin,
                    RetrieveModelMixin

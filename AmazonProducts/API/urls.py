@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ProductsView,CategoryView,GetProductDetail,ProductDetailByCategory
+from AmazonProducts.API.views import ProductsView,CategoryView,GetProductDetail,ProductDetailByCategory
 urlpatterns=[
     path('ProductsList',ProductsView.as_view()),
     path('CategoryList/<int:id>',CategoryView.as_view()),
