@@ -1,43 +1,44 @@
 from django.contrib.auth.models import User
 
 from Account.models import Account
-from rest_framework.serializers import Serializer,CharField,ImageField,ValidationError
+from rest_framework.serializers import Serializer,FileField,CharField,ImageField,ValidationError
 class AccountSerializer(Serializer):
-    FirstName=CharField()
-    LastName=CharField()
-    Email=CharField()
-    ImageUser=ImageField(allow_null=True,allow_empty_file=True,default=None)
-    Password=CharField()
-    Repassword=CharField()
+    firstname=CharField()
+    lastname=CharField()
+    email=CharField()
+    imageuser=ImageField(required=False,allow_null=True)
+    password=CharField()
+    repassword=CharField()
     def validate(self, data):
-        password=data.get('Password')
-        repassword=data.get('Repassword')
+        password=data.get('password')
+        repassword=data.get('repassword')
         if repassword!=password:
             raise ValidationError('Passwords Are not Match')
-        return password
-    def validate_Firstname(self,value):
+        print(data.get('imageuser'))
+        return data
+    def validate_username(self,value):
 
-        selected_username=User.objects.filter(username=value).first()
+        selected_username=User.objects.filter(username=value)
         if selected_username is True:
             raise ValidationError('Choose Another Username')
+        print("Firstname")
         return value
-    def validate_Email(self,value):
+    def validate_email(self,value):
         selected_email=User.objects.filter(email=value)
         if selected_email is True:
             raise ValidationError('Choose Another Email')
         return value
-
     def create(self,validated_data):
+        print("Create User Function")
         if self.is_valid():
-            username=validated_data['FirstName']
-            firstname=validated_data['FirstName']
-            lastname=validated_data['LastName']
-            email=validated_data['Email']
-            image=validated_data['ImageUser']
-            password=validated_data['Password']
+            firstname=self.validated_data['firstname']
+            lastname=self.validated_data['lastname']
+            email=self.validated_data['email']
+            image=self.validated_data['imageuser']
+            password=self.validated_data['password']
             creating_user=User.objects.create_user(
 
-                username=username,
+                username=firstname,
                 password=password,
                 first_name=firstname,
                 email=email,
@@ -49,7 +50,8 @@ class AccountSerializer(Serializer):
                 ImageFile=image
 
             )
-            return create_account
+            print(self.validated_data['imageuser'])
+        return self.validated_data
 class LoginSerializer(Serializer):
     UserName=CharField()
     Password=CharField()
