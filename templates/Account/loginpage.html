@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+     <link rel="stylesheet" href='/static/logincss/loginstyle.css'>
+  </head>
+  <body>
+  <div class="logincontainer">
+      <div class="formcontainer">
+          <div class="buttoncontainer">
+              <div id="btnaccount"></div>
+              <button type="button" class="toggle-btn">Log In</button>
+              <button type="button" class="toggle-btn" onclick="clickregister()">Register</button>
+          </div>
+          <form id="formelements" class="input-group">
+              <input type="text" class="input-feild" placeholder="Enter Your Password"required>
+
+            <input type="text" class="input-feild" placeholder="Enter Your UserName" required>
+              <button type="submit" class="buttonsubmit">Login</button>
+          </form>
+      </div>
+  </div>
+   </body>
+</html>
+ <script>
+var formelements=document.getElementById("formelements")
+function removeallelements(){
+
+    while(formelements.firstChild){
+        formelements.removeChild(formelements.firstChild)
+    }
+}
+function clickregister(){
+    removeallelements()
+    var username=document.createElement('input')
+    username.className='input-feild'
+    username.type='text'
+    username.placeholder="Enter UserName"
+    var lastname=document.createElement('input')
+    lastname.className='input-feild'
+    lastname.type='text'
+    lastname.placeholder="Enter the LastName"
+    var email=document.createElement('input')
+    email.className='input-feild'
+    email.type='text'
+    email.placeholder="Enter the email"
+    var password=document.createElement('input')
+    password.className='input-feild'
+    password.type='text'
+    password.placeholder="Enter the Password"
+    var repassword=document.createElement('input')
+    repassword.className='input-feild'
+    repassword.type='text'
+    repassword.placeholder="Enter the Password Again"
+    var image=document.createElement('input')
+    image.type='file'
+    var button=document.createElement('input')
+    button.className="buttonsubmit"
+    button.type="submit"
+    button.value="Register"
+    formelements.appendChild(username)
+    formelements.appendChild(lastname)
+    formelements.appendChild(password)
+    formelements.appendChild(email)
+    formelements.appendChild(image)
+    formelements.appendChild(button)
+
+}
+function clicklogin(){
+    removeallelements()
+    var username=document.createElement('input')
+    username.className='input-feild'
+    username.type='text'
+    username.placeholder="Enter UserName"
+    var lastname=document.createElement('input')
+    lastname.className='input-feild'
+    lastname.type='text'
+    lastname.placeholder="Enter the LastName"
+}
+</script>
