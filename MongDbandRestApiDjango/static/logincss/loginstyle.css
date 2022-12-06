@@ -1,0 +1,72 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.logincontainer{
+    height: 100%;
+    width: 100%;
+    background-image:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(Amazon-Logo-Black.jpg);
+    background-position:center ;
+    background-size:cover;
+    position: absolute;
+
+}
+.formcontainer{
+    height:300px;
+    width:300px;
+    position: relative;
+    margin: 5% auto;
+    padding: 5px;
+    background: rgba(11, 127, 171, 0.73);
+    border-radius:10% ;
+}
+.buttoncontainer{
+    margin: auto auto;
+    width: 200px;
+    box-shadow: 0 0 20px 9px;
+    position: relative;
+    background-color: black;
+    border-radius: 10px;
+    background: rgba(205,209,228, 0.6)
+
+}
+.toggle-btn{
+    padding: 5px 20px;
+    border: 0;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    background: transparent;
+}
+#btnaccount{
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 110px;
+    height: 100%;
+    background:rgba(205,209,228, 0.6);
+    transition: .5s;
+    border-radius:30px ;
+}
+.input-group{
+    top: 50px;
+    position: absolute;
+    width: 280px;
+    transition: .5s;
+}
+.input-feild{
+    width: 85%;
+    padding: 10px 30px;
+    margin: 5px 0;
+    border-top:none;
+    border-right:none;
+    border-left:none;
+    outline: none;
+    background:transparent;
+}
+.buttonsubmit{
+    width: 100%;
+    border-radius: 10px;
+    background:black;
+    color: #1A01CC;
+}
