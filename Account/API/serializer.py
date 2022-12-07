@@ -7,18 +7,25 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model=User
         fields=['id', 'first_name', 'email', 'last_name']
+
 class AccountSerializer(ModelSerializer):
+    firstname=CharField()
+    lastname=CharField()
+    email=CharField()
+    image=ImageField(required=False,allow_null=True)
     repassword=CharField(write_only=True)
     password=CharField(write_only=True)
-    UserAccount=UserSerializer()
     class Meta:
         model=Account
-        fields=['ImageFile','repassword','password','UserAccount']
+        fields=['firstname','lastname','email','image','repassword','password',]
     def validate(self, data):
+        print(data)
         password=data.get('password')
+        print(password)
         repassword=data.get('repassword')
         if password!=repassword:
             raise ValidationError('Passwords Conflict')
+        print(data)
         return data
     def validate_email(self,value):
         selected_user=User.objects.filter(email=value).first()
@@ -26,16 +33,19 @@ class AccountSerializer(ModelSerializer):
             raise ValidationError('Choose Another Email')
         return value
     def create(self, validated_data):
+        print("enter create")
         if self.is_valid():
+            print("enter create")
             email, image, lastname, username = self.get_values(validated_data)
+            print(email)
             password = validated_data['password']
-            create_user=User.objects.create(username=username,
-                                            first_name=username,
-                                            last_name=lastname,
-                                            email=email,
-                                            is_staff=True
-                                            )
-            create_user.set_password(password=password)
+            print(password)
+            create_user=User.objects.create_user(username=username,password=password,
+                                                 first_name=username,
+                                                 last_name=lastname,
+                                                 email=email,
+                                                 is_staff=True
+                                                 )
             create_account=Account.objects.create(
                 UserAccount_id=create_user.id,
                 ImageFile=image
@@ -43,11 +53,10 @@ class AccountSerializer(ModelSerializer):
             return validated_data
 
     def get_values(self, validated_data):
-        userdetail = validated_data['UserAccount']
-        username = userdetail['first_name']
-        email = userdetail['email']
-        lastname = userdetail['last_name']
-        image = validated_data['ImageFile']
+        username = validated_data['firstname']
+        email = validated_data['email']
+        lastname = validated_data['lastname']
+        image = validated_data['image']
         return email, image, lastname, username
 
 class UpdatingUserSerializer(AccountSerializer):
@@ -55,7 +64,7 @@ class UpdatingUserSerializer(AccountSerializer):
     password = None
     class Meta:
         model=Account
-        fields=['ImageFile','UserAccount']
+        fields=['firstname','lastname','email','image']
     def validate(self, data):return data
     def update(self, instance, validated_data):
         user=self.context['request'].user

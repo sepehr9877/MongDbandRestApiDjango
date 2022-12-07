@@ -13,7 +13,14 @@ class CreateAccountPage(ListAPIView,CreateModelMixin):
     serializer_class = AccountSerializer
     def get_queryset(self):None
     def post(self,request,*args,**kwargs):
-        return self.create(request,*args,**kwargs)
+        print("entre")
+        serializer=AccountSerializer(data=self.request.data)
+        print(self.request.data['image'])
+        if serializer.is_valid():
+            user=serializer.create(validated_data=serializer.validated_data)
+            return Response({"User Created":user},status=status.HTTP_201_CREATED)
+        print(serializer.errors)
+        return Response({"Errors":serializer.errors})
 class UpdateAccountPage(ListAPIView,UpdateModelMixin,RetrieveModelMixin):
     serializer_class = UpdatingUserSerializer
     permission_classes = [AccountPermission]
