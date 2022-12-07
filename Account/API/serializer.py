@@ -13,7 +13,7 @@ class AccountSerializer(ModelSerializer):
     UserAccount=UserSerializer()
     class Meta:
         model=Account
-        fields=['ImageFile','repassword','UserAccount']
+        fields=['ImageFile','repassword','password','UserAccount']
     def validate(self, data):
         password=data.get('password')
         repassword=data.get('repassword')

@@ -63,10 +63,14 @@
     border-left:none;
     outline: none;
     background:transparent;
+
+}
+.input-feild::placeholder{
+    color: black;
 }
 .buttonsubmit{
     width: 100%;
     border-radius: 10px;
-    background:black;
-    color: #1A01CC;
+    background-color:blue;
+    color: white;
 }
