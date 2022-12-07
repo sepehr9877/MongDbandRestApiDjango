@@ -14,7 +14,7 @@
               <button type="button" class="toggle-btn" >Register</button>
           </div>
           <form  id="formelements" class="input-group" enctype="multipart/form-data" id="registerform">
-                {% csrf_token %}
+{#                {% csrf_token %}#}
               <label id="username">firstname</label>
               <input name="username" type="text" class="input-feild" placeholder="Enter Your firstname"required>
             <label id="password">password</label>
@@ -37,35 +37,53 @@
 <script>
 
 function AjaxRegister(){
-    console.log($('#image').val())
-    $.ajax({
 
-        data:{
-            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+    var files=document.getElementsByName('image')[0].files
+   var data = new FormData($('formelements').get(0));
+    data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+    var mydata={
+            'X-CSRFToken': '{{ csrf_token }}',
             "firstname":document.getElementsByName('username')[0].value,
             "lastname":document.getElementsByName('lastname')[0].value,
             'email':document.getElementsByName('email')[0].value,
             'repassword':document.getElementsByName('repassword')[0].value,
             'password':document.getElementsByName('password')[0].value,
-            'image':$('#image').val()
-        },
+            'image':document.getElementsByName('image')[0].value
 
-        type:"post",
-        url:"http://127.0.0.1:8000/CreateAccount/",
-        success:function (response){
-            if(response.Authenticate==true){
-                window.location.href="/www.amazon.com"
-            }
-            else {
-
-                if(response.Authenticate==false){
-                window.href.location="/http://127.0.0.1:8000/Login_Page"
-            }
-
-            }
 
         }
+    fetch('http://127.0.0.1:8000/CreateAccount/', {
+    method: 'POST',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+    },
+    body: JSON.stringify(mydata)
     })
+    .then(response => response.json())
+    .then(response => console.log(JSON.stringify(response)))
+    {#$.ajax({#}
+    {#    headers:{csrfmiddlewaretoken: '{{ csrf_token }}'},#}
+    {#    type:"post",#}
+    {#    data:mydata,#}
+    {#    processData: false,#}
+    {#    enctype: 'multipart/form-data',#}
+    {#    url:"http://127.0.0.1:8000/CreateAccount/",#}
+    {#    success:function (response){#}
+    {#        if(response.Authenticate==true){#}
+    {#            window.location.href="/www.amazon.com"#}
+    {#        }#}
+    {#        else {#}
+    {##}
+    {#            if(response.Authenticate==false){#}
+    {#            window.href.location="/http://127.0.0.1:8000/Login_Page"#}
+    {#        }#}
+    {##}
+    {#        }#}
+    {##}
+    {#    }#}
+    {#})#}
 }
 
 </script>
