@@ -14,8 +14,8 @@ class CreateAccountPage(ListAPIView,CreateModelMixin):
     def get_queryset(self):None
     def post(self,request,*args,**kwargs):
         print("entre")
+        print(self.request.data)
         serializer=AccountSerializer(data=self.request.data)
-        print(self.request.data['image'])
         if serializer.is_valid():
             user=serializer.create(validated_data=serializer.validated_data)
             return Response({"User Created":user},status=status.HTTP_201_CREATED)

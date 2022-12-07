@@ -19,7 +19,6 @@ class AccountSerializer(ModelSerializer):
         model=Account
         fields=['firstname','lastname','email','image','repassword','password',]
     def validate(self, data):
-        print(data)
         password=data.get('password')
         print(password)
         repassword=data.get('repassword')
