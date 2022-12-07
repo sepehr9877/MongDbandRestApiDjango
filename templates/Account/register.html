@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+     <link rel="stylesheet" href='/static/logincss/loginstyle.css'>
+  </head>
+  <body>
+  <div class="logincontainer">
+      <div class="formcontainer">
+          <div class="buttoncontainer">
+              <div id="btnaccount"></div>
+              <button type="button" class="toggle-btn" >Register</button>
+          </div>
+          <form  id="formelements" class="input-group" enctype="multipart/form-data" id="registerform">
+                {% csrf_token %}
+              <label id="username">firstname</label>
+              <input name="username" type="text" class="input-feild" placeholder="Enter Your firstname"required>
+            <label id="password">password</label>
+            <input name="password" type="text" class="input-feild" placeholder="Enter Your Password" required>
+            <label>repassword</label>
+            <input name="repassword" type="text" class="input-feild" placeholder="Enter Your Password Again" required>
+              <label>image</label>
+              <input name="image"type="file" id="image">
+              <label>lastname</label>
+              <input accept="image/jpeg, image/png" type="text" name="lastname"class="input-feild" placeholder="Enter Your LastName" required>
+              <label>email</label>
+              <input type="text" name="email"class="input-feild" placeholder="Enter Your Email" required>
+              <button type="button" onclick="AjaxRegister()" class="buttonsubmit" >Register</button>
+          </form>
+      </div>
+  </div>
+   </body>
+</html>
+ <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script>
+
+function AjaxRegister(){
+    console.log($('#image').val())
+    $.ajax({
+
+        data:{
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            "firstname":document.getElementsByName('username')[0].value,
+            "lastname":document.getElementsByName('lastname')[0].value,
+            'email':document.getElementsByName('email')[0].value,
+            'repassword':document.getElementsByName('repassword')[0].value,
+            'password':document.getElementsByName('password')[0].value,
+            'image':$('#image').val()
+        },
+
+        type:"post",
+        url:"http://127.0.0.1:8000/CreateAccount/",
+        success:function (response){
+            if(response.Authenticate==true){
+                window.location.href="/www.amazon.com"
+            }
+            else {
+
+                if(response.Authenticate==false){
+                window.href.location="/http://127.0.0.1:8000/Login_Page"
+            }
+
+            }
+
+        }
+    })
+}
+
+</script>

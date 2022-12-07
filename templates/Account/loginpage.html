@@ -16,12 +16,12 @@
           </div>
           <form  id="formelements" class="input-group">
                 {% csrf_token %}
-              <label>username</label>
+              <label id="username">username</label>
               <input name="username" type="text" class="input-feild" placeholder="Enter Your UserName"required>
-            <label>password</label>
+            <label id="password">password</label>
             <input name="password" type="text" class="input-feild" placeholder="Enter Your Password" required>
 
-              <button type="button" onclick="AjaxCall()" class="buttonsubmit" >Login</button>
+              <button type="button" onclick="AjaxLoginCall()" class="buttonsubmit" >Login</button>
           </form>
       </div>
   </div>
@@ -29,87 +29,8 @@
 </html>
  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script>
-class CreatElement{
-    constructor() {
-        this.ElementList=[]
-        this.FlagCall=false
-        this.ElementListValues=[]
-    }
-    RemoveallchildElement(){
-        while(formelements.firstChild){
-            formelements.removeChild(formelements.firstChild)
-        }
 
-        this.ElementList=[]
-
-    }
-    AddChildElement(){
-        var username=document.createElement('input')
-        username.className='input-feild'
-        username.type='text'
-        username.placeholder="Enter UserName"
-        var password=document.createElement('input')
-        password.className='input-feild'
-        password.type='text'
-        password.placeholder="Enter the Password"
-        var button=document.createElement('input')
-        button.className="buttonsubmit"
-        button.type="submit"
-        this.ElementList.push(username,password)
-        if(this.FlagCall==true){
-            button.value="Login"
-            this.ElementList.push(button)
-            return this.ElementList
-        }
-        else{
-            var lastname=document.createElement('input')
-            lastname.className='input-feild'
-            lastname.type='text'
-            lastname.placeholder="Enter the LastName"
-            var email=document.createElement('input')
-            email.className='input-feild'
-            email.type='text'
-            email.placeholder="Enter the email"
-            var repassword=document.createElement('input')
-            repassword.className='input-feild'
-            repassword.type='text'
-            repassword.placeholder="Enter the Password Again"
-            button.value="Register"
-            this.ElementList.push(lastname,email,repassword,button)
-            return this.ElementList
-
-        }
-    }
-    AddElementToPage(){
-        this.RemoveallchildElement()
-        this.ElementList=this.AddChildElement()
-        this.ElementList.forEach((item)=>{
-            formelements.appendChild(item)
-        })
-    }
-    AjaxCallApi(url){
-        console.log("ff")
-        console.log(this.ElementListValues.length)
-    }
-
-
-}
-var formelements=document.getElementById("formelements")
-var logincall=false
-var Element=new CreatElement();
-var log_url="http://127.0.0.1:8000/LoginPage/"
-var register_url="http://127.0.0.1:8000/CreateAccount/"
-function LoginClick(){
-    Element.AddElementToPage()
-    Element.FlagCall=false
-
-}
-function RegisterClick(){
-    Element.AddElementToPage()
-    Element.FlagCall=true
-
-}
-function AjaxCall(){
+function AjaxLoginCall(){
     $.ajax({
         data:{csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
             username:document.getElementsByName('username')[0].value,
@@ -130,9 +51,6 @@ function AjaxCall(){
 
         }
     })
-
-
 }
-
 
 </script>
