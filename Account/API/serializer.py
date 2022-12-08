@@ -1,23 +1,26 @@
+import os.path
+
 from django.contrib.auth.models import User
 
 from Account.models import Account
 from rest_framework.serializers import ModelSerializer,SerializerMethodField,Serializer,FileField,CharField,ImageField,ValidationError
-
+import  encodings
 class UserSerializer(ModelSerializer):
     class Meta:
         model=User
         fields=['id', 'first_name', 'email', 'last_name']
 
-class AccountSerializer(ModelSerializer):
+class AccountSerializer(Serializer):
     firstname=CharField()
     lastname=CharField()
     email=CharField()
-    image=ImageField(required=False,allow_null=True)
+    image=ImageField(required=False,allow_null=True,write_only=True)
     repassword=CharField(write_only=True)
     password=CharField(write_only=True)
     class Meta:
         model=Account
         fields=['firstname','lastname','email','image','repassword','password',]
+        extra_kwargs={'image':{'read_only':True}}
     def validate(self, data):
         password=data.get('password')
         print(password)
@@ -31,6 +34,16 @@ class AccountSerializer(ModelSerializer):
         if selected_user:
             raise ValidationError('Choose Another Email')
         return value
+    def getfilename(self,filepath):
+        basename=os.path.basename(filepath)
+        name,ex=os.path.splitext(basename)
+        return name,ex
+    def uploadimage(self,filenames):
+        for filename in filenames:
+            with open(filename, 'rb') as f_obj:
+                contents = f_obj.read()
+                print(contents)
+                return contents
     def create(self, validated_data):
         print("enter create")
         if self.is_valid():
@@ -39,24 +52,26 @@ class AccountSerializer(ModelSerializer):
             print(email)
             password = validated_data['password']
             print(password)
-            create_user=User.objects.create_user(username=username,password=password,
-                                                 first_name=username,
-                                                 last_name=lastname,
-                                                 email=email,
-                                                 is_staff=True
-                                                 )
-            create_account=Account.objects.create(
-                UserAccount_id=create_user.id,
-                ImageFile=image
-            )
+            print(self.uploadimage(filenames=image))
+            validated_data['image']=self.uploadimage(filenames=image)
+            # create_user=User.objects.create_user(username=username,password=password,
+            #                                      first_name=username,
+            #                                      last_name=lastname,
+            #                                      email=email,
+            #                                      is_staff=True
+            #                                      )
+            # create_account=Account.objects.create(
+            #     UserAccount_id=create_user.id,
+            #     ImageFile=image
+            # )
             return validated_data
 
     def get_values(self, validated_data):
-        image = validated_data['image'].encode('utf-8').strip()
+        file=validated_data['image']
         username = validated_data['firstname']
         email = validated_data['email']
         lastname = validated_data['lastname']
-        return email, image, lastname, username
+        return email, file, lastname, username
 
 class UpdatingUserSerializer(AccountSerializer):
     repassword = None
