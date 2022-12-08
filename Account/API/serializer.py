@@ -47,16 +47,15 @@ class AccountSerializer(ModelSerializer):
                                                  )
             create_account=Account.objects.create(
                 UserAccount_id=create_user.id,
-                ImageFile=imagefile
+                ImageFile=image
             )
             return validated_data
 
     def get_values(self, validated_data):
+        image = validated_data['image'].encode('utf-8').strip()
         username = validated_data['firstname']
         email = validated_data['email']
         lastname = validated_data['lastname']
-        image = validated_data['image']
-        print(image)
         return email, image, lastname, username
 
 class UpdatingUserSerializer(AccountSerializer):

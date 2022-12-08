@@ -46,14 +46,15 @@
          mydata[name]=value
      }
      mydata['csrfmiddlewaretoken']='{{ csrf_token }}'
-     console.log(mydata)
      $.ajax({
          url:'http://127.0.0.1:8000/CreateAccount/',
          type:"post",
          data:formdata,
          processData: false,
-         contentType: false
-
+         contentType: false,
+        success(response){
+             console.log(response)
+        }
      })
  })
 
