@@ -8,14 +8,14 @@ from .permissions import AccountPermission
 # Create your views here.
 from .serializer import AccountSerializer,LoginSerializer,UpdatingUserSerializer
 from Account.models import Account
+from django.contrib.sites.models import Site
 class CreateAccountPage(ListAPIView,CreateModelMixin):
     permission_classes = []
     serializer_class = AccountSerializer
     def get_queryset(self):None
     def post(self,request,*args,**kwargs):
-        print("entre")
-        print(self.request.data)
         serializer=AccountSerializer(data=self.request.data)
+        serializer.context['url']=self.request
         if serializer.is_valid():
             user=serializer.create(validated_data=serializer.validated_data)
             return Response({"User Created":user},status=status.HTTP_201_CREATED)
@@ -23,7 +23,7 @@ class CreateAccountPage(ListAPIView,CreateModelMixin):
         return Response({"Errors":serializer.errors})
 class UpdateAccountPage(ListAPIView,UpdateModelMixin,RetrieveModelMixin):
     serializer_class = UpdatingUserSerializer
-    permission_classes = [AccountPermission]
+    # permission_classes = [AccountPermission]
     lookup_field = 'id'
     def get_queryset(self,*args,**kwargs):
         id=self.kwargs['id']

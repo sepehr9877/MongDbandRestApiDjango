@@ -10,8 +10,7 @@
   <div class="logincontainer">
       <div class="formcontainer">
           <div class="buttoncontainer">
-              <div id="btnaccount"></div>
-              <button type="button" class="toggle-btn" >Register</button>
+              <div style="position: center;margin:auto 70px">Register</div>
           </div>
           <form  id="formelements" class="input-group" enctype="multipart/form-data" id="registerform">
 
@@ -36,16 +35,10 @@
  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script>
  const form=document.getElementById("formelements")
- const csrfmiddlewaretoken='{{ csrf_token}}'
  form.addEventListener('submit',function (e){
      e.preventDefault()
      var formdata=new FormData(form)
      formdata.append('csrfmiddlewaretoken','{{ csrf_token }}')
-     var mydata={}
-     for(let [name, value] of formdata){
-         mydata[name]=value
-     }
-     mydata['csrfmiddlewaretoken']='{{ csrf_token }}'
      $.ajax({
          url:'http://127.0.0.1:8000/CreateAccount/',
          type:"post",

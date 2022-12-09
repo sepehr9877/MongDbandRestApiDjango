@@ -11,74 +11,61 @@ class UserSerializer(ModelSerializer):
         fields=['id', 'first_name', 'email', 'last_name']
 
 class AccountSerializer(Serializer):
-    firstname=CharField()
-    lastname=CharField()
-    email=CharField()
-    image=ImageField(required=False,allow_null=True,write_only=True)
+    firstname=CharField(write_only=True)
+    lastname=CharField(write_only=True)
+    email=CharField(write_only=True)
     repassword=CharField(write_only=True)
     password=CharField(write_only=True)
-    class Meta:
-        model=Account
-        fields=['firstname','lastname','email','image','repassword','password',]
-        extra_kwargs={'image':{'read_only':True}}
+    ImageFile=ImageField()
     def validate(self, data):
         password=data.get('password')
         print(password)
         repassword=data.get('repassword')
         if password!=repassword:
             raise ValidationError('Passwords Conflict')
-        print(data)
         return data
     def validate_email(self,value):
         selected_user=User.objects.filter(email=value).first()
         if selected_user:
             raise ValidationError('Choose Another Email')
         return value
-    def getfilename(self,filepath):
-        basename=os.path.basename(filepath)
-        name,ex=os.path.splitext(basename)
-        return name,ex
-    def uploadimage(self,filenames):
-        for filename in filenames:
-            with open(filename, 'rb') as f_obj:
-                contents = f_obj.read()
-                print(contents)
-                return contents
     def create(self, validated_data):
-        print("enter create")
         if self.is_valid():
-            print("enter create")
             email, image, lastname, username = self.get_values(validated_data)
-            print(email)
             password = validated_data['password']
-            print(password)
-            print(self.uploadimage(filenames=image))
-            validated_data['image']=self.uploadimage(filenames=image)
-            # create_user=User.objects.create_user(username=username,password=password,
-            #                                      first_name=username,
-            #                                      last_name=lastname,
-            #                                      email=email,
-            #                                      is_staff=True
-            #                                      )
-            # create_account=Account.objects.create(
-            #     UserAccount_id=create_user.id,
-            #     ImageFile=image
-            # )
-            return validated_data
+            request=self.context['url']
+            create_user=User.objects.create_user(username=username,password=password,
+                                                 first_name=username,
+                                                 last_name=lastname,
+                                                 email=email,
+                                                 is_staff=True
+                                                 )
+
+            create_account=Account.objects.create(
+                UserAccount_id=create_user.id,
+                ImageFile=image
+            )
+            self.validated_data['ImageFile']=str(request.build_absolute_uri(create_account.ImageFile.url))
+            return self.validated_data
 
     def get_values(self, validated_data):
-        file=validated_data['image']
+        file=validated_data['ImageFile']
         username = validated_data['firstname']
         email = validated_data['email']
         lastname = validated_data['lastname']
         return email, file, lastname, username
 
-class UpdatingUserSerializer(AccountSerializer):
+class UpdatingUserSerializer(ModelSerializer):
     repassword = None
     password = None
+    UserDetail=UserSerializer(many=True,write_only=True)
     class Meta:
         model=Account
-        fields=['firstname','lastname','email','image']
+        fields=['ImageFile','UserDetail']
+
+    def setIntitialInstacne(self):
+        id=self.context
+        print(id)
     def validate(self, data):return data
     def update(self, instance, validated_data):
         user=self.context['request'].user
