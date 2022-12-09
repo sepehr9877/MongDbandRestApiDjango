@@ -54,37 +54,40 @@ class AccountSerializer(Serializer):
         email = validated_data['email']
         lastname = validated_data['lastname']
         return email, file, lastname, username
-
 class UpdatingUserSerializer(ModelSerializer):
-    repassword = None
-    password = None
-    UserDetail=UserSerializer(many=True,write_only=True)
+    UserAccount=UserSerializer()
     class Meta:
         model=Account
-        fields=['ImageFile','UserDetail']
+        fields=['ImageFile','UserAccount']
 
-    def setIntitialInstacne(self):
-        id=self.context
-        print(id)
     def validate(self, data):return data
     def update(self, instance, validated_data):
         user=self.context['request'].user
         useridinstance=instance.UserAccount.id
-        if (user.is_superuser or (user.id==useridinstance)):
-            usernameinstance=instance.UserAccount.username
-            email, image, lastname,username=self.get_values(validated_data)
-            User.objects.filter(id=useridinstance).update(
-                username=username,
-                first_name=username,
-                last_name=lastname,
-                email=email
-            )
-            Account.objects.filter(UserAccount_id=useridinstance).update(
-                ImageFile=image
-            )
-            return validated_data
-        else:
-            raise ValidationError("You have No Permission")
+        usernameinstance=instance.UserAccount.username
+        request=self.context['request']
+        email, image, lastname,username=self.get_value(dictionary=validated_data)
+        User.objects.filter(id=useridinstance).update(
+            username=username,
+            first_name=username,
+            last_name=lastname,
+            email=email
+        )
+        Account.objects.filter(UserAccount_id=useridinstance).update(
+            ImageFile=image
+        )
+        selected_account=Account.objects.filter(UserAccount_id=useridinstance).first()
+        if selected_account.ImageFile:
+            validated_data['ImageFile']=str(request.build_absolute_uri(selected_account.ImageFile.url))
+        return validated_data
+    def get_value(self, dictionary):
+        file = dictionary['ImageFile']
+        userdetail=dictionary['UserAccount']
+        username = userdetail['first_name']
+        email = userdetail['email']
+        lastname = userdetail['last_name']
+        return email, file, lastname, username
+
 class LoginSerializer(Serializer):
     username=CharField()
     password=CharField()

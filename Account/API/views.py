@@ -32,8 +32,11 @@ class UpdateAccountPage(ListAPIView,UpdateModelMixin,RetrieveModelMixin):
     def get(self, request, *args, **kwargs):
         return self.retrieve(request,*args,**kwargs)
     def put(self,request,*args,**kwargs):
-        return self.update(request,*args,**kwargs)
-
+        serializer=UpdatingUserSerializer()
+        serializer.context['request']=self.request
+        # validation_date=serializer.update(request,*args,**kwargs)
+        # return Response(validation_date,status=status.HTTP_201_CREATED)
+        return self.partial_update(request,*args,**kwargs)
 class LoginUser(ListAPIView):
     serializer_class = LoginSerializer
     permission_classes = []
