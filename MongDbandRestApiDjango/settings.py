@@ -29,7 +29,16 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [ # new
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,7 +49,8 @@ INSTALLED_APPS = [
     'AmazonProducts',
     'Account',
     'rest_framework',
-    'django.contrib.sites'
+    'django.contrib.sites',
+    'rest_framework.authtoken'
 ]
 SITE_ID =1
 MIDDLEWARE = [

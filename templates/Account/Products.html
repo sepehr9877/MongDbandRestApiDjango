@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Updating Profile</title>
+    <link rel="stylesheet" href='/static/logincss/product.css'>
+</head>
+<body>
+<div>
+    <div id="MainContent" class="gallery">
+    <div id="ProductsContent1"class="content">
+        <img  src="/media/User/user.jpg">
+        <h3>Product</h3>
+        <p>this is Product Title</p>
+        <h6>Price : 55</h6>
+        <h6>Rate:3</h6>
+    </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script>
+    var urldetail="http://127.0.0.1:8000/ProductsList"
+    var data=null
+    $.ajax(
+        {
+            type:"Get",
+            url:urldetail,
+            success(response){
+                createElement(response)
+            }
+        }
+    )
+
+function createElement(response) {
+    var maindiv=document.getElementById("MainContent")
+    var results = response['results'][0]
+    var Image = results['Image']
+    var ImageEl = document.createElement('img')
+    ImageEl.src = Image
+    var Price = results['Price']
+    var Rate = results['Rate']
+    var RateEl = document.createElement('h6')
+    RateEl.innerHTML = Rate
+    var Reviews = results['Reviews']
+    var ReviewEl = document.createElement('H6')
+    ReviewEl.innerHTML = Reviews
+    var title = results['Title']
+    var TitleEl = document.createElement('p')
+    TitleEl.innerHTML = title
+    var created_div = document.createElement('div')
+    created_div.id="ProductsContent2"
+    created_div.className="content"
+    created_div.appendChild(ImageEl)
+    created_div.appendChild(TitleEl)
+    created_div.appendChild(RateEl)
+    created_div.appendChild(ReviewEl)
+    maindiv.appendChild(created_div)
+
+
+}
+
+
+</script>
