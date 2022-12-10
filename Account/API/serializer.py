@@ -60,26 +60,35 @@ class UpdatingUserSerializer(ModelSerializer):
         model=Account
         fields=['ImageFile','UserAccount']
 
-    def validate(self, data):return data
+    def validate(self, data):
+        UserDetail=data['UserAccount']
+        lastname=UserDetail['last_name']
+        username=UserDetail['first_name']
+        if len(username)<4:
+            raise ValidationError("UserName is invalid please try another username")
+        if not lastname:
+            raise ValidationError("The LastName Field SHouldnt be Empty Field ")
+        return data
     def update(self, instance, validated_data):
         user=self.context['request'].user
         useridinstance=instance.UserAccount.id
         usernameinstance=instance.UserAccount.username
         request=self.context['request']
-        email, image, lastname,username=self.get_value(dictionary=validated_data)
+        email, image, lastname,username=self.get_value(dictionary=self.validated_data)
         User.objects.filter(id=useridinstance).update(
             username=username,
             first_name=username,
             last_name=lastname,
             email=email
         )
-        Account.objects.filter(UserAccount_id=useridinstance).update(
-            ImageFile=image
-        )
+        if image:
+            Account.objects.filter(UserAccount_id=useridinstance).update(
+                ImageFile=image
+            )
         selected_account=Account.objects.filter(UserAccount_id=useridinstance).first()
         if selected_account.ImageFile:
-            validated_data['ImageFile']=str(request.build_absolute_uri(selected_account.ImageFile.url))
-        return validated_data
+           self.validated_data['ImageFile']=str(request.build_absolute_uri(selected_account.ImageFile.url))
+        return selected_account
     def get_value(self, dictionary):
         file = dictionary['ImageFile']
         userdetail=dictionary['UserAccount']

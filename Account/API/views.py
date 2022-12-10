@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.mixins import RetrieveModelMixin,CreateModelMixin,UpdateModelMixin
+from rest_framework.mixins import RetrieveModelMixin,CreateModelMixin,UpdateModelMixin,DestroyModelMixin
 from rest_framework.generics import ListAPIView
 from .permissions import AccountPermission
 # Create your views here.
@@ -21,7 +21,10 @@ class CreateAccountPage(ListAPIView,CreateModelMixin):
             return Response({"User Created":user},status=status.HTTP_201_CREATED)
         print(serializer.errors)
         return Response({"Errors":serializer.errors})
-class UpdateAccountPage(ListAPIView,UpdateModelMixin,RetrieveModelMixin):
+class UpdateAccountPage(ListAPIView,
+                        UpdateModelMixin,
+                        RetrieveModelMixin,
+                        DestroyModelMixin):
     serializer_class = UpdatingUserSerializer
     # permission_classes = [AccountPermission]
     lookup_field = 'id'
@@ -32,11 +35,15 @@ class UpdateAccountPage(ListAPIView,UpdateModelMixin,RetrieveModelMixin):
     def get(self, request, *args, **kwargs):
         return self.retrieve(request,*args,**kwargs)
     def put(self,request,*args,**kwargs):
-        serializer=UpdatingUserSerializer()
-        serializer.context['request']=self.request
-        # validation_date=serializer.update(request,*args,**kwargs)
-        # return Response(validation_date,status=status.HTTP_201_CREATED)
-        return self.partial_update(request,*args,**kwargs)
+        serializer=UpdatingUserSerializer(data=self.request.data)
+        serializer.context['request'] = self.request
+        if serializer.is_valid():
+            kwargs['partial'] = True
+            return self.update(request,*args,**kwargs)
+        else:
+            return Response({"Not Valid":serializer.errors},status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request,*args,**kwargs)
 class LoginUser(ListAPIView):
     serializer_class = LoginSerializer
     permission_classes = []
