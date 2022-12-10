@@ -16,7 +16,7 @@ class AccountSerializer(Serializer):
     email=CharField(write_only=True)
     repassword=CharField(write_only=True)
     password=CharField(write_only=True)
-    ImageFile=ImageField()
+    ImageFile=ImageField(allow_null=True,write_only=True)
     def validate(self, data):
         password=data.get('password')
         print(password)
@@ -24,12 +24,16 @@ class AccountSerializer(Serializer):
         if password!=repassword:
             raise ValidationError('Passwords Conflict')
         return data
+    def validate_ImageFile(self):
+        print("image")
+        pass
     def validate_email(self,value):
         selected_user=User.objects.filter(email=value).first()
         if selected_user:
             raise ValidationError('Choose Another Email')
         return value
     def create(self, validated_data):
+        print('create')
         if self.is_valid():
             email, image, lastname, username = self.get_values(validated_data)
             password = validated_data['password']
@@ -45,8 +49,10 @@ class AccountSerializer(Serializer):
                 UserAccount_id=create_user.id,
                 ImageFile=image
             )
-            self.validated_data['ImageFile']=str(request.build_absolute_uri(create_account.ImageFile.url))
-            return self.validated_data
+            if create_account.ImageFile:
+                self.validated_data['ImageFile']=str(request.build_absolute_uri(create_account.ImageFile.url))
+
+            return create_account
 
     def get_values(self, validated_data):
         file=validated_data['ImageFile']
