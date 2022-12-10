@@ -28,7 +28,7 @@ class UpdateAccountPage(ListAPIView,
                         RetrieveModelMixin,
                         DestroyModelMixin):
     serializer_class = UpdatingUserSerializer
-    # permission_classes = [AccountPermission]
+    permission_classes = [AccountPermission]
     lookup_field = 'id'
     def get_queryset(self,*args,**kwargs):
         id=self.kwargs['id']
